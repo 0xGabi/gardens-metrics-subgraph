@@ -9,11 +9,11 @@ type Garden @entity {
   stableToken: Token
 
   outflowsCount: Int!
-  outflows: [Outflows!] @derivedFrom(field: "garden")
+  outflows: [Outflow!] @derivedFrom(field: "garden")
   active: Boolean!
 }
 
-type Outflows @entity {
+type Outflow @entity {
   id: ID!
   garden: Garden!
 
@@ -47,18 +47,22 @@ type Contributor @entity {
   beneficiary: Beneficiary!
 }
 
+# We get this information from scraping the Transfer events of the request token of the Garden
 type Transfer @entity {
   id: ID!
   createdAt: BigInt!
+  token: Token
   beneficiary: Beneficiary!
   contributor: Contributor!
   amount: BigInt!
 }
 
-# To support streams we need to check Superfluid interactions
+# We get this information from scraping the events of the super token instance of the request token of the Garden
+# We may need to manually input this data at first
 type Stream @entity {
   id: ID!
   createdAt: BigInt!
+  token: Token
   beneficiary: Beneficiary!
   contributor: Contributor!
   flowRate: BigInt!
