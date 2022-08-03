@@ -1,0 +1,26 @@
+specVersion: 0.0.1
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: Kernel
+    network: rinkeby
+    source:
+      address: "0x7777cd7c9c6d3537244871ac8e73b3cb9710d45a"
+      abi: Kernel
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - ProxyDeposit
+        - SetApp
+      abis:
+        - name: Kernel
+          file: ./abis/Kernel.json
+      eventHandlers:
+        - event: ProxyDeposit(address,uint256)
+          handler: handleProxyDeposit
+        - event: SetApp(indexed bytes32,indexed bytes32,address)
+          handler: handleSetApp
+      file: ./src/mapping.ts
