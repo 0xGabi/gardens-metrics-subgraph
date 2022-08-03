@@ -1,6 +1,96 @@
-type ExampleEntity @entity {
+type Garden @entity {
   id: ID!
-  count: BigInt!
-  sender: Bytes! # address
-  value: BigInt! # uint256
+  createdAt: BigInt!
+
+  # We need to review if we need all these tokens
+  token: Token
+  wrappableToken: Token
+  requestToken: Token
+  stableToken: Token
+
+  outflowsCount: Int!
+  outflows: [Outflows!] @derivedFrom(field: "garden")
+  active: Boolean!
 }
+
+type Outflows @entity {
+  id: ID!
+  garden: Garden!
+
+  #  No ned to keep proposal status because we only going to process executed proposals
+  #  status: ProposalStatus!
+  #  statusInt: Int!
+
+  #  No ned to keep proposal type because we only going to process proposal of funding
+  #  type: ProposalType!
+  #  typeInt: Int!
+
+  createdAt: BigInt!
+  executedAt: BigInt
+
+  beneficiary: Beneficiary
+  requestedAmount: BigInt
+  stable: Boolean
+}
+
+# Usually a sub DAO of one of the working groups of the Garden
+type Beneficiary @entity {
+  id: ID!
+  type: AddressType!
+  contributors: [Contributor!] @derivedFrom(field: "beneficiary")
+  transfers: [Transfer!] @derivedFrom(field: "beneficiary")
+  streams: [Stream!] @derivedFrom(field: "beneficiary")
+}
+
+type Contributor @entity {
+  id: ID!
+  beneficiary: Beneficiary!
+}
+
+type Transfer @entity {
+  id: ID!
+  createdAt: BigInt!
+  beneficiary: Beneficiary!
+  contributor: Contributor!
+  amount: BigInt!
+}
+
+# To support streams we need to check Superfluid interactions
+type Stream @entity {
+  id: ID!
+  createdAt: BigInt!
+  beneficiary: Beneficiary!
+  contributor: Contributor!
+  flowRate: BigInt!
+}
+
+type Token @entity {
+  id: ID!
+  name: String!
+  symbol: String!
+  decimals: Int!
+}
+
+# We can start only supporting Gnosis
+enum AddressType {
+  Gnosis
+  Aragon
+  Colony
+  EOA # Externaly Owned Account
+}
+
+# enum ProposalStatus {
+#   Active
+#   Cancelled
+#   Executed
+#   Challenged
+#   Disputed
+#   Rejected
+#   Settled
+# }
+
+# enum ProposalType {
+#  Suggestion # Signaling proposal
+#  Proposal # Proposal requesting funds
+#  Decision # Vote
+# }
