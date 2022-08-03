@@ -1,0 +1,17 @@
+# Do not edit subgraph.yaml,this is a generated file.
+# Instead, edit subgraph.template.yaml and run `yarn manifest-<network>-[staging]`
+specVersion: 0.0.1
+description: A template for Garden metric subgraph
+repository: https://github.com/0xGabi/gardens-metrics
+schema:
+  file: ./schema.graphql
+dataSources:
+{{> Organizations.yaml}}
+{{> GardensTemplates.yaml}}
+templates:
+{{> Agreement.template.yaml}}
+{{> ConvictionVoting.template.yaml}}
+{{> DisputableVoting.template.yaml}}
+{{> HookedTokenManager.template.yaml}}
+{{> Pair.template.yaml}}
+{{> Organization.template.yaml}}

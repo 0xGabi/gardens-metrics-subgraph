@@ -1,0 +1,26 @@
+- kind: ethereum/contract
+  name: ConvictionVoting
+  network: {{network}}
+  source:
+    abi: ConvictionVoting
+  mapping:
+    kind: ethereum/events
+    apiVersion: 0.0.5
+    language: wasm/assemblyscript
+    entities:
+      - Garden
+      - Outflow
+      - Token
+    abis:
+      - name: ConvictionVoting
+        file: ./abis/ConvictionVoting.json
+      - name: ERC20
+        file: ./abis/ERC20.json
+    eventHandlers:
+      - event: ProposalAdded(indexed address,indexed uint256,indexed uint256,string,bytes,uint256,bool,address)
+        handler: handleProposalAdded
+      - event: ProposalExecuted(indexed uint256,uint256)
+        handler: handleProposalExecuted
+      - event: ContractPaused(bool)
+        handler: handleContractPaused
+    file: ./src/mappings/ConvictionVoting.ts
