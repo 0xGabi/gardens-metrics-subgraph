@@ -2,15 +2,28 @@
   "name": "gardens-metrics",
   "license": "UNLICENSED",
   "scripts": {
-    "codegen": "graph codegen",
-    "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ 0xGabi/gardens-metrics",
-    "create-local": "graph create --node http://localhost:8020/ 0xGabi/gardens-metrics",
-    "remove-local": "graph remove --node http://localhost:8020/ 0xGabi/gardens-metrics",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 0xGabi/gardens-metrics"
+    "codegen": "./scripts/codegen.sh",
+    "codegen:rinkeby": "NETWORK=rinkeby yarn codegen",
+    "codegen:xdai": "NETWORK=xdai yarn codegen",
+    "build": "./scripts/build-graph.sh",
+    "build:rinkeby": "NETWORK=rinkeby yarn build",
+    "build:xdai": "NETWORK=xdai yarn build",
+    "draw-schema": "./scripts/draw-schema.sh",
+    "deploy": "./scripts/deploy.sh",
+    "deploy:rinkeby": "NETWORK=rinkeby yarn deploy",
+    "deploy:xdai": "NETWORK=xdai yarn deploy",
+    "deploy:xdai:staging": "STAGING=true NETWORK=xdai yarn deploy",
+    "manifest": "./scripts/build-manifest.sh",
+    "manifest:rinkeby": "NETWORK=rinkeby yarn manifest",
+    "manifest:xdai": "NETWORK=xdai yarn manifest",
+    "manifest:xdai:staging": "STAGING=true NETWORK=xdai yarn manifest",
+    "clean": "node ../../node_modules/rimraf/bin.js build generated subgraph.yaml src/constants.ts"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.28.0",
     "@graphprotocol/graph-ts": "0.26.0"
+  },
+  "devDependencies": {
+    "mustache": "^4.2.0"
   }
 }
