@@ -2,7 +2,7 @@ import { Address, BigInt, DataSourceTemplate } from "@graphprotocol/graph-ts";
 import { loadOrCreateOrg, loadTokenData, saveOrgToken } from "./helpers";
 import { onAppTemplateCreated } from "./hooks";
 import { CONVICTION_VOTING_APPIDS, TOKENS_APPIDS } from "./constants";
-import { ConvictionVoting as ConvictionVotingContract } from "../../generated/templates/ConvictionVoting/ConvictionVoting";
+import { ConvictionVoting as ConvictionVotingContract } from "../generated/templates/ConvictionVoting/ConvictionVoting";
 
 export function processApp(
   orgAddress: Address,
@@ -19,7 +19,6 @@ export function processApp(
     const stakeTokenId = loadTokenData(stakeToken);
 
     const org = loadOrCreateOrg(orgAddress);
-    org.stakeToken = stakeTokenId;
 
     // Save organization token if not exists (1Hive edge case)
     saveOrgToken(stakeTokenId, orgAddress);

@@ -1,5 +1,5 @@
 import { Address } from "@graphprotocol/graph-ts";
-import { Proposal as ProposalEntity } from "../../generated/schema";
+import { Outflow as OutflowEntity } from "../../generated/schema";
 import {
   ConvictionVoting as ConvictionVotingContract,
   ProposalAdded as ProposalAddedEvent,
@@ -10,13 +10,13 @@ export function getOrgAddress(appAddress: Address): Address {
   return convictionVoting.kernel();
 }
 
-/// /// Proposal entity //////
-export function populateProposalDataFromEvent(
-  proposal: ProposalEntity | null,
+/// /// Outflow entity //////
+export function populateOutflowDataFromEvent(
+  outflow: OutflowEntity | null,
   event: ProposalAddedEvent
 ): void {
-  proposal.requestedAmount = event.params.amount;
-  proposal.createdAt = event.block.timestamp;
-  proposal.beneficiary = event.params.beneficiary;
-  proposal.stable = event.params.stable;
+  outflow.requestedAmount = event.params.amount;
+  outflow.createdAt = event.block.timestamp;
+  outflow.beneficiary = event.params.beneficiary;
+  outflow.stable = event.params.stable;
 }

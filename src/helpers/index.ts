@@ -2,7 +2,7 @@ import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
 import { ERC20 as ERC20Contract } from "../../generated/templates/ConvictionVoting/ERC20";
 import {
   Garden as GardenEntity,
-  Proposal as ProposalEntity,
+  Outflow as OutflowEntity,
   Token as TokenEntity,
 } from "../../generated/schema";
 
@@ -18,7 +18,7 @@ export const ZERO_ADDRESS = Address.fromString(
 
 /// /// Token Entity //////
 export function tokenHasOrg(token: TokenEntity | null): boolean {
-  return !!token && !!token.garden;
+  return !!token;
 }
 
 export function saveOrgToken(tokenId: string, orgAddress: Address): void {
@@ -69,7 +69,7 @@ export function loadOrCreateOrg(orgAddress: Address): GardenEntity {
 }
 
 /// /// Proposal Entity //////
-export function getProposalEntityId(
+export function getOutflowEntityId(
   appAddress: Address,
   proposalId: BigInt
 ): string {
@@ -81,15 +81,15 @@ export function getProposalEntityId(
   );
 }
 
-export function getProposalEntity(
+export function getOutflowEntity(
   appAddress: Address,
   proposalId: BigInt
-): ProposalEntity {
-  const proposalEntityId = getProposalEntityId(appAddress, proposalId);
+): OutflowEntity {
+  const proposalEntityId = getOutflowEntityId(appAddress, proposalId);
 
-  let proposal = ProposalEntity.load(proposalEntityId);
+  let proposal = OutflowEntity.load(proposalEntityId);
   if (!proposal) {
-    proposal = new ProposalEntity(proposalEntityId);
+    proposal = new OutflowEntity(proposalEntityId);
     proposal.executedAt = BigInt.fromI32(0);
   }
 
@@ -99,12 +99,6 @@ export function getProposalEntity(
 export function incrementOutflowsCount(orgAddress: Address): void {
   const org = loadOrCreateOrg(orgAddress);
   org.outflowsCount += 1;
-  org.save();
-}
-
-export function incrementSupporterCount(orgAddress: Address): void {
-  const org = loadOrCreateOrg(orgAddress);
-  org.supporterCount += 1;
   org.save();
 }
 

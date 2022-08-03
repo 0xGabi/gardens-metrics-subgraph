@@ -5,9 +5,9 @@ import {
   ProposalExecuted as ProposalExecutedEvent,
 } from "../../generated/templates/ConvictionVoting/ConvictionVoting";
 import {
-  getProposalEntity,
+  getOutflowEntity,
   incrementOutflowsCount,
-  populateProposalDataFromEvent,
+  populateOutflowDataFromEvent,
 } from "../helpers";
 
 export function handleProposalAdded(event: ProposalAddedEvent): void {
@@ -15,15 +15,15 @@ export function handleProposalAdded(event: ProposalAddedEvent): void {
   const organization = convictionVotingApp.kernel();
   incrementOutflowsCount(organization);
 
-  const proposal = getProposalEntity(event.address, event.params.id);
-  populateProposalDataFromEvent(proposal, event);
-  proposal.organization = organization.toHexString();
+  const outflow = getOutflowEntity(event.address, event.params.id);
+  populateOutflowDataFromEvent(outflow, event);
+  outflow.garden = organization.toHexString();
 
-  proposal.save();
+  outflow.save();
 }
 
 export function handleProposalExecuted(event: ProposalExecutedEvent): void {
-  const proposal = getProposalEntity(event.address, event.params.id);
+  const proposal = getOutflowEntity(event.address, event.params.id);
   proposal.executedAt = event.block.timestamp;
 
   proposal.save();
