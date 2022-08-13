@@ -12,7 +12,7 @@ type Outflow @entity {
   id: ID!
   garden: Garden!
   transferAt: Int
-  beneficiary: Beneficiary
+  beneficiary: Bytes
   requestedAmount: BigInt
   stable: Boolean
 }

@@ -1,3 +1,4 @@
+import { Address } from "@graphprotocol/graph-ts";
 import {
   ProposalAdded as ProposalAddedEvent,
   ProposalExecuted as ProposalExecutedEvent,
@@ -22,26 +23,25 @@ export function handleProposalAdded(event: ProposalAddedEvent): void {
     outflow.requestedAmount = event.params.amount;
     outflow.stable = event.params.stable;
     outflow.garden = gardenAddress.toHexString();
-
-    const beneficiary = loadOrCreateBeneficiary(
-      gardenAddress,
-      event.params.beneficiary
-    );
-    beneficiary.requestTokenBalance = beneficiary.requestTokenBalance.plus(
-      event.params.amount
-    );
-
-    outflow.beneficiary = beneficiary.id;
+    outflow.beneficiary = event.params.beneficiary;
 
     outflow.save();
-    beneficiary.save();
   }
 }
 
 export function handleProposalExecuted(event: ProposalExecutedEvent): void {
   const gardenAddress = getGardenAddress(event.address);
-  const proposal = loadOrCreateOutflow(gardenAddress, event.params.id);
-  proposal.transferAt = event.block.timestamp.toI32();
+  const outflow = loadOrCreateOutflow(gardenAddress, event.params.id);
+  const beneficiary = loadOrCreateBeneficiary(
+    gardenAddress,
+    Address.fromString(outflow.beneficiary!.toHex())
+  );
+  beneficiary.requestTokenBalance = beneficiary.requestTokenBalance.plus(
+    outflow.requestedAmount!
+  );
 
-  proposal.save();
+  outflow.transferAt = event.block.timestamp.toI32();
+
+  outflow.save();
+  beneficiary.save();
 }
