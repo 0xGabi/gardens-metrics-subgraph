@@ -1,30 +1,47 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
 import {
-  ConvictionVoting as ConvictionVotingContract,
   ProposalAdded as ProposalAddedEvent,
   ProposalExecuted as ProposalExecutedEvent,
 } from "../../generated/templates/ConvictionVoting/ConvictionVoting";
 import {
-  getOutflowEntity,
-  incrementOutflowsCount,
-  populateOutflowDataFromEvent,
+  loadOrCreateOutflow,
+  loadOrCreateGarden,
+  loadOrCreateBeneficiary,
+  getGardenAddress,
+  ZERO_ADDRESS,
 } from "../helpers";
 
 export function handleProposalAdded(event: ProposalAddedEvent): void {
-  const convictionVotingApp = ConvictionVotingContract.bind(event.address);
-  const organization = convictionVotingApp.kernel();
-  incrementOutflowsCount(organization);
+  if (ZERO_ADDRESS.notEqual(event.params.beneficiary)) {
+    const gardenAddress = getGardenAddress(event.address);
+    const garden = loadOrCreateGarden(gardenAddress);
+    garden.outflowsCount += 1;
+    garden.save();
 
-  const outflow = getOutflowEntity(event.address, event.params.id);
-  populateOutflowDataFromEvent(outflow, event);
-  outflow.garden = organization.toHexString();
+    const outflow = loadOrCreateOutflow(gardenAddress, event.params.id);
 
-  outflow.save();
+    outflow.requestedAmount = event.params.amount;
+    outflow.stable = event.params.stable;
+    outflow.garden = gardenAddress.toHexString();
+
+    const beneficiary = loadOrCreateBeneficiary(
+      gardenAddress,
+      event.params.beneficiary
+    );
+    beneficiary.requestTokenBalance = beneficiary.requestTokenBalance.plus(
+      event.params.amount
+    );
+
+    outflow.beneficiary = beneficiary.id;
+
+    outflow.save();
+    beneficiary.save();
+  }
 }
 
 export function handleProposalExecuted(event: ProposalExecutedEvent): void {
-  const proposal = getOutflowEntity(event.address, event.params.id);
-  proposal.executedAt = event.block.timestamp;
+  const gardenAddress = getGardenAddress(event.address);
+  const proposal = loadOrCreateOutflow(gardenAddress, event.params.id);
+  proposal.transferAt = event.block.timestamp.toI32();
 
   proposal.save();
 }

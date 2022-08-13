@@ -1,33 +1,17 @@
 type Garden @entity {
   id: ID!
-  createdAt: BigInt!
-
-  # We need to review if we need all these tokens
-  token: Token
-  wrappableToken: Token
+  address: Bytes!
+  createdAt: Int!
   requestToken: Token
-  stableToken: Token
-
   outflowsCount: Int!
   outflows: [Outflow!] @derivedFrom(field: "garden")
-  active: Boolean!
+  beneficiaries: [Beneficiary!] @derivedFrom(field: "garden")
 }
 
 type Outflow @entity {
   id: ID!
   garden: Garden!
-
-  #  No ned to keep proposal status because we only going to process executed proposals
-  #  status: ProposalStatus!
-  #  statusInt: Int!
-
-  #  No ned to keep proposal type because we only going to process proposal of funding
-  #  type: ProposalType!
-  #  typeInt: Int!
-
-  createdAt: BigInt!
-  executedAt: BigInt
-
+  transferAt: Int
   beneficiary: Beneficiary
   requestedAmount: BigInt
   stable: Boolean
@@ -36,65 +20,33 @@ type Outflow @entity {
 # Usually a sub DAO of one of the working groups of the Garden
 type Beneficiary @entity {
   id: ID!
-  type: AddressType!
-  contributors: [Contributor!] @derivedFrom(field: "beneficiary")
+  address: Bytes!
+  garden: Garden!
+  requestTokenBalance: BigInt!
   transfers: [Transfer!] @derivedFrom(field: "beneficiary")
-  streams: [Stream!] @derivedFrom(field: "beneficiary")
 }
 
 type Contributor @entity {
   id: ID!
-  beneficiary: Beneficiary!
+  address: Bytes!
+  garden: Garden!
+  requestTokenBalance: BigInt!
+  transfers: [Transfer!] @derivedFrom(field: "contributor")
 }
 
-# We get this information from scraping the Transfer events of the request token of the Garden
 type Transfer @entity {
   id: ID!
-  createdAt: BigInt!
+  createdAt: Int!
   token: Token
   beneficiary: Beneficiary!
   contributor: Contributor!
   amount: BigInt!
 }
 
-# We get this information from scraping the events of the super token instance of the request token of the Garden
-# We may need to manually input this data at first
-type Stream @entity {
-  id: ID!
-  createdAt: BigInt!
-  token: Token
-  beneficiary: Beneficiary!
-  contributor: Contributor!
-  flowRate: BigInt!
-}
-
 type Token @entity {
   id: ID!
   name: String!
-  symbol: String!
+  symbol: String
   decimals: Int!
+  garden: Garden!
 }
-
-# We can start only supporting Gnosis
-enum AddressType {
-  Gnosis
-  Aragon
-  Colony
-  EOA # Externaly Owned Account
-}
-
-# enum ProposalStatus {
-#   Active
-#   Cancelled
-#   Executed
-#   Challenged
-#   Disputed
-#   Rejected
-#   Settled
-# }
-
-# enum ProposalType {
-#  Suggestion # Signaling proposal
-#  Proposal # Proposal requesting funds
-#  Decision # Vote
-# }

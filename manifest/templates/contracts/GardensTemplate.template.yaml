@@ -22,12 +22,4 @@
     eventHandlers:
       - event: DeployDao(address)
         handler: handleDeployDao
-      - event: SetupDao(address)
-        handler: handleSetupDao
-      - event: DeployToken(address)
-        handler: handleDeployToken
-      - event: InstalledApp(address,bytes32)
-        handler: handleInstalledApp
-      - event: GardenTransactionTwo(address,address,address)
-        handler: handleGardenTransactionTwo
     file: ./src/mappings/GardensTemplate.ts

@@ -1,9 +1,11 @@
 import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
 import { ERC20 as ERC20Contract } from "../../generated/templates/ConvictionVoting/ERC20";
 import {
+  Beneficiary as BeneficiaryEntity,
   Garden as GardenEntity,
   Outflow as OutflowEntity,
-  Token as TokenEntity,
+  Token,
+  Contributor as ContributorEntity,
 } from "../../generated/schema";
 
 export const MAX_UINT_256 = BigInt.fromUnsignedBytes(
@@ -17,89 +19,133 @@ export const ZERO_ADDRESS = Address.fromString(
 );
 
 /// /// Token Entity //////
-export function tokenHasOrg(token: TokenEntity | null): boolean {
-  return !!token;
-}
-
-export function saveOrgToken(tokenId: string, orgAddress: Address): void {
-  const org = loadOrCreateOrg(orgAddress);
-  if (!org.token) {
-    org.token = tokenId;
-    org.save();
-  }
-}
-
-/// /// Token Entity //////
-export function loadTokenData(address: Address): string {
+export function loadToken(address: Address): Token {
   const id = address.toHexString();
-  const token = TokenEntity.load(id);
+  let token = Token.load(id);
 
-  if (!token) {
-    const token = new TokenEntity(id);
+  if (token === null) {
+    token = new Token(id);
     const tokenContract = ERC20Contract.bind(address);
 
     // App could be instantiated without a vault which means request token could be invalid
     const symbol = tokenContract.try_symbol();
     if (symbol.reverted) {
-      return null;
+      token.symbol;
+    } else {
+      token.symbol = symbol.value;
     }
 
-    token.symbol = symbol.value;
     token.name = tokenContract.name();
     token.decimals = tokenContract.decimals();
+    token.garden = ZERO_ADDRESS.toHex();
     token.save();
   }
 
-  return id;
+  return token;
 }
 
 /// /// Garden entity //////
-export function loadOrCreateOrg(orgAddress: Address): GardenEntity {
-  const id = orgAddress.toHexString();
+export function loadOrCreateGarden(gardenAddress: Address): GardenEntity {
+  const id = gardenAddress.toHexString();
   let garden = GardenEntity.load(id);
 
   if (garden === null) {
     garden = new GardenEntity(id);
     garden.outflowsCount = 0;
-    garden.active = true;
-    garden.createdAt = BigInt.fromI32(0);
+    garden.createdAt = 0;
+    garden.address = gardenAddress;
+    garden.save();
   }
 
-  return garden!;
+  return garden;
 }
 
 /// /// Proposal Entity //////
-export function getOutflowEntityId(
-  appAddress: Address,
+export function getOutflowId(
+  gardenAddress: Address,
   proposalId: BigInt
 ): string {
   return (
-    "appAddress:" +
-    appAddress.toHexString() +
+    "gardenAddress:" +
+    gardenAddress.toHexString() +
     "-proposalId:" +
     proposalId.toHexString()
   );
 }
 
-export function getOutflowEntity(
-  appAddress: Address,
+export function loadOrCreateOutflow(
+  gardenAddress: Address,
   proposalId: BigInt
 ): OutflowEntity {
-  const proposalEntityId = getOutflowEntityId(appAddress, proposalId);
+  const outflowId = getOutflowId(gardenAddress, proposalId);
 
-  let proposal = OutflowEntity.load(proposalEntityId);
-  if (!proposal) {
-    proposal = new OutflowEntity(proposalEntityId);
-    proposal.executedAt = BigInt.fromI32(0);
+  let outflow = OutflowEntity.load(outflowId);
+  if (!outflow) {
+    outflow = new OutflowEntity(outflowId);
+    outflow.save();
   }
 
-  return proposal!;
+  return outflow;
 }
 
-export function incrementOutflowsCount(orgAddress: Address): void {
-  const org = loadOrCreateOrg(orgAddress);
-  org.outflowsCount += 1;
-  org.save();
+export function getBeneficiaryId(
+  gardenAddress: Address,
+  beneficiary: Address
+): string {
+  return (
+    "gardenAddress:" +
+    gardenAddress.toHexString() +
+    "-beneficiary:" +
+    beneficiary.toHexString()
+  );
+}
+
+export function loadOrCreateBeneficiary(
+  gardenAddress: Address,
+  beneficiaryAddress: Address
+): BeneficiaryEntity {
+  const beneficiaryId = getBeneficiaryId(gardenAddress, beneficiaryAddress);
+
+  let beneficiary = BeneficiaryEntity.load(beneficiaryId);
+  if (!beneficiary) {
+    beneficiary = new BeneficiaryEntity(beneficiaryId);
+    beneficiary.address = beneficiaryAddress;
+    beneficiary.garden = gardenAddress.toHex();
+    beneficiary.requestTokenBalance = new BigInt(0);
+    beneficiary.save();
+  }
+
+  return beneficiary;
+}
+
+export function getContributorId(
+  gardenAddress: Address,
+  contributor: Address
+): string {
+  return (
+    "gardenAddress:" +
+    gardenAddress.toHexString() +
+    "-contributor:" +
+    contributor.toHexString()
+  );
+}
+
+export function loadOrCreateContributor(
+  gardenAddress: Address,
+  contributorAddress: Address
+): ContributorEntity {
+  const contributorId = getContributorId(gardenAddress, contributorAddress);
+
+  let contributor = ContributorEntity.load(contributorId);
+  if (!contributor) {
+    contributor = new ContributorEntity(contributorId);
+    contributor.address = contributorAddress;
+    contributor.garden = gardenAddress.toHex();
+    contributor.requestTokenBalance = new BigInt(0);
+    contributor.save();
+  }
+
+  return contributor;
 }
 
 // Export local helpers

@@ -9,9 +9,6 @@ dataSources:
 {{> Organizations.yaml}}
 {{> GardensTemplates.yaml}}
 templates:
-{{> Agreement.template.yaml}}
-{{> ConvictionVoting.template.yaml}}
-{{> DisputableVoting.template.yaml}}
-{{> HookedTokenManager.template.yaml}}
-{{> Pair.template.yaml}}
 {{> Organization.template.yaml}}
+{{> ConvictionVoting.template.yaml}}
+{{> ERC20.template.yaml}}

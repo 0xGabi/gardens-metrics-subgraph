@@ -16,7 +16,7 @@ mustache \
   -p manifest/templates/sources/Organizations.yaml \
   -p manifest/templates/sources/GardensTemplates.yaml \
   -p manifest/templates/contracts/ConvictionVoting.template.yaml \
-  -p manifest/templates/contracts/HookedTokenManager.template.yaml \
+  -p manifest/templates/contracts/ERC20.template.yaml \
   -p manifest/templates/contracts/Organization.template.yaml \
   -p manifest/templates/contracts/GardensTemplate.template.yaml \
   $DATA \

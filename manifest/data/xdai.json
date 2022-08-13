@@ -8,33 +8,13 @@
         "startBlock": "14861344"
       }
     ],
-    "OrganizationTemplates": [
-      {
-        "address": "0x5507A6365C47d5b201Af3c1CB18C7fD4a889321b",
-        "name": "GardensTemplate",
-        "startBlock": 17550461
-      },
-      {
-        "address": "0x9B770712603d66Faa8F048EEf4C0Afd2FA7F0844",
-        "name": "GardensTemplateWithModVoting",
-        "startBlock": 19255064
-      },
-      {
-        "address": "0xd1fc61d57d7201c3645ef84d30df6da5ed2e21ee",
-        "name": "GardensTemplateWithModVotingFixedApproved",
-        "startBlock": 20155579
-      }
-    ]  
+    "OrganizationTemplates": []
   },
   "1HiveGarden": "0x8ccbeab14b5ac4a431fffc39f4bec4089020a155",
   "convictionVotingAppIds": [
     {
-      "id": "0xca60629a22f03bcad7738fee1a6f0c5863eb89463621b40566a6799b82cbe184", "name": "disputable-conviction-voting.open.aragonpm.eth"
-    }
-  ],
-  "tokensAppIds": [
-    { 
-      "id": "0x3ccad1fc11d5b14e58c1c53a5138a51f4da8d509831bc505e60bb74d88f8bef5", "name": "wrappable-hooked-token-manager.open.aragonpm.eth"
+      "id": "0xca60629a22f03bcad7738fee1a6f0c5863eb89463621b40566a6799b82cbe184",
+      "name": "disputable-conviction-voting.open.aragonpm.eth"
     }
   ]
 }

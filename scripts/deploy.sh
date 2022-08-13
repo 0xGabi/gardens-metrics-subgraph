@@ -21,7 +21,7 @@ then
   SUBGRAPH_EXT='-'$NETWORK'-staging'
 fi
 
-echo Deploying subgraph 1hive/gardens${SUBGRAPH_EXT}
+echo Deploying subgraph 1hive/garden${SUBGRAPH_EXT}
 
 # Deploy subgraph
-graph deploy 1hive/gardens${SUBGRAPH_EXT} --ipfs ${IPFS_NODE} --node ${GRAPH_NODE} --access-token ${GRAPHKEY}
+graph deploy 1hive/garden-metrics${SUBGRAPH_EXT} --ipfs ${IPFS_NODE} --node ${GRAPH_NODE} --access-token ${GRAPHKEY}

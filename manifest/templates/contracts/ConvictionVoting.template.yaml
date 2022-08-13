@@ -21,6 +21,4 @@
         handler: handleProposalAdded
       - event: ProposalExecuted(indexed uint256,uint256)
         handler: handleProposalExecuted
-      - event: ContractPaused(bool)
-        handler: handleContractPaused
     file: ./src/mappings/ConvictionVoting.ts
