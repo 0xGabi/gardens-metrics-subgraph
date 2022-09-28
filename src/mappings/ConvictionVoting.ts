@@ -36,7 +36,7 @@ export function handleProposalExecuted(event: ProposalExecutedEvent): void {
     gardenAddress,
     Address.fromString(outflow.beneficiary!.toHex())
   );
-  beneficiary.requestTokenBalance = beneficiary.requestTokenBalance.plus(
+  beneficiary.totalRecived = beneficiary.totalRecived.plus(
     outflow.requestedAmount!
   );
 

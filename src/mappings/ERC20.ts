@@ -1,5 +1,5 @@
 import { Address } from "@graphprotocol/graph-ts";
-import { Beneficiary, Transfer } from "../../generated/schema";
+import { Beneficiary, ContributorOutflow } from "../../generated/schema";
 import { Transfer as TransferEvent } from "../../generated/templates/ERC20/ERC20";
 import {
   getBeneficiaryId,
@@ -21,28 +21,26 @@ export function handleTransfer(event: TransferEvent): void {
   if (beneficiary) {
     // TODO: check the beneficiary is a gnosis safe address
 
-    beneficiary.requestTokenBalance = beneficiary.requestTokenBalance.minus(
-      event.params.value
-    );
-
     const contributor = loadOrCreateContributor(
       Address.fromString(garden.id),
       event.params.to
     );
 
-    contributor.requestTokenBalance = contributor.requestTokenBalance.plus(
+    contributor.totalRecived = contributor.totalRecived.plus(
       event.params.value
     );
 
-    const transfer = new Transfer(event.transaction.hash.toHex());
+    const contributorOutflow = new ContributorOutflow(
+      event.transaction.hash.toHex()
+    );
 
-    transfer.amount = event.params.value;
-    transfer.createdAt = event.block.timestamp.toI32();
-    transfer.token = token.id;
-    transfer.beneficiary = beneficiary.id;
-    transfer.contributor = contributor.id;
+    contributorOutflow.amount = event.params.value;
+    contributorOutflow.transferAt = event.block.timestamp.toI32();
+    contributorOutflow.token = token.id;
+    contributorOutflow.beneficiary = beneficiary.id;
+    contributorOutflow.contributor = contributor.id;
 
-    transfer.save();
+    contributorOutflow.save();
     contributor.save();
     beneficiary.save();
   }

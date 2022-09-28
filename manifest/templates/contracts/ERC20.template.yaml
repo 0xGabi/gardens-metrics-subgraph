@@ -10,7 +10,7 @@
     entities:
       - Beneficiary
       - Contributor
-      - Transfer
+      - ContributorOutflow
     abis:
       - name: ERC20
         file: ./abis/ERC20.json

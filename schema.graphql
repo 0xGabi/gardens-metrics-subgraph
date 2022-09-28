@@ -22,21 +22,20 @@ type Beneficiary @entity {
   id: ID!
   address: Bytes!
   garden: Garden!
-  requestTokenBalance: BigInt!
-  transfers: [Transfer!] @derivedFrom(field: "beneficiary")
+  totalRecived: BigInt!
+  outflows: [ContributorOutflow!] @derivedFrom(field: "beneficiary")
 }
 
 type Contributor @entity {
   id: ID!
   address: Bytes!
   garden: Garden!
-  requestTokenBalance: BigInt!
-  transfers: [Transfer!] @derivedFrom(field: "contributor")
+  totalRecived: BigInt!
 }
 
-type Transfer @entity {
+type ContributorOutflow @entity {
   id: ID!
-  createdAt: Int!
+  transferAt: Int!
   token: Token
   beneficiary: Beneficiary!
   contributor: Contributor!

@@ -111,7 +111,7 @@ export function loadOrCreateBeneficiary(
     beneficiary = new BeneficiaryEntity(beneficiaryId);
     beneficiary.address = beneficiaryAddress;
     beneficiary.garden = gardenAddress.toHex();
-    beneficiary.requestTokenBalance = new BigInt(0);
+    beneficiary.totalRecived = new BigInt(0);
     beneficiary.save();
   }
 
@@ -141,7 +141,7 @@ export function loadOrCreateContributor(
     contributor = new ContributorEntity(contributorId);
     contributor.address = contributorAddress;
     contributor.garden = gardenAddress.toHex();
-    contributor.requestTokenBalance = new BigInt(0);
+    contributor.totalRecived = new BigInt(0);
     contributor.save();
   }
 
